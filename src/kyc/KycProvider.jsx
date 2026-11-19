@@ -27,12 +27,35 @@ export function KycProvider({ children }) {
   // anti-spoof and liveness; a portrait read by OCR can feed face match.
   const [capture, setCapture] = useState(null); // {captureId, selfieB64, result, at}
   const [portrait, setPortrait] = useState(null); // {b64, source, at}
+  // Selfie checks (test only, see ChecksPanel): the server's list and modes
+  // ({adjustable, modes, groups}, null if unknown) and the user's choice.
+  const [serverChecks, setServerChecks] = useState(null);
+  const [checkChoice, setCheckChoice] = useState(() => {
+    try {
+      return JSON.parse(load('kyc_check_modes', '{}')) || {};
+    } catch {
+      return {};
+    }
+  });
 
   const onLog = useCallback((entry) => {
     setLog((l) => [{ ...entry, at: Date.now() }, ...l].slice(0, 60));
   }, []);
 
-  const client = useMemo(() => createClient({ baseUrl, accessCode, onLog }), [baseUrl, accessCode, onLog]);
+  // Sent: only the groups whose choice differs from the server's mode, and
+  // only when the server accepts them - otherwise every capture would be 403.
+  const checkModes = useMemo(() => {
+    if (!serverChecks?.adjustable) return {};
+    return Object.fromEntries(
+      Object.entries(checkChoice).filter(([g, m]) => g in serverChecks.modes && serverChecks.modes[g] !== m),
+    );
+  }, [serverChecks, checkChoice]);
+  const checkModesKey = JSON.stringify(checkModes);
+
+  const client = useMemo(
+    () => createClient({ baseUrl, accessCode, checkModes: JSON.parse(checkModesKey), onLog }),
+    [baseUrl, accessCode, checkModesKey, onLog],
+  );
 
   const checkHealth = useCallback(async () => {
     try {
@@ -45,6 +68,12 @@ export function KycProvider({ children }) {
         accessError = err;
       }
       setHealth({ state: accessError ? 'locked' : 'ok', modules: h.modules || [], customer, accessError });
+      try {
+        const c = await client.faceQualityCheckModes();
+        setServerChecks((prev) => (JSON.stringify(prev) === JSON.stringify(c) ? prev : c));
+      } catch {
+        setServerChecks(null); // older server without the endpoint, or locked
+      }
     } catch (err) {
       setHealth({ state: 'down', error: err });
     }
@@ -88,8 +117,15 @@ export function KycProvider({ children }) {
       setCapture: (c) => setCapture(c ? { ...c, at: Date.now() } : null),
       portrait,
       setPortrait: (p) => setPortrait(p ? { ...p, at: Date.now() } : null),
+      serverChecks,
+      checkChoice,
+      checkModes,
+      setCheckChoice: (choice) => {
+        setCheckChoice(choice);
+        save('kyc_check_modes', Object.keys(choice).length ? JSON.stringify(choice) : '');
+      },
     }),
-    [client, baseUrl, accessCode, health, checkHealth, log, capture, portrait],
+    [client, baseUrl, accessCode, health, checkHealth, log, capture, portrait, serverChecks, checkChoice, checkModes],
   );
 
   return <KycContext.Provider value={value}>{children}</KycContext.Provider>;

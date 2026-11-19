@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLang } from '../lib/i18n';
 import { href } from '../lib/router';
+import ChecksPanel from '../kyc/ChecksPanel';
 import { ApiLog, StatusBadge } from '../kyc/Connection';
 import AntiSpoofDemo from '../kyc/demos/AntiSpoofDemo';
 import CaseDemo from '../kyc/demos/CaseDemo';
@@ -23,6 +24,9 @@ const DEMOS = {
   forensics: ForensicsDemo,
   case: CaseDemo,
 };
+
+// Demos that take a selfie (or judge one image) run the selfie checks.
+const USES_SELFIE_CHECKS = new Set(['face-quality', 'face-capture', 'face-match', 'antispoof', 'liveness', 'case']);
 
 export default function ModulePage({ id }) {
   const { t } = useLang();
@@ -62,7 +66,11 @@ export default function ModulePage({ id }) {
         </div>
       </header>
 
-      <Demo />
+      {USES_SELFIE_CHECKS.has(id) && <ChecksPanel collapsible />}
+
+      <div className={USES_SELFIE_CHECKS.has(id) ? 'mt-6' : ''}>
+        <Demo />
+      </div>
 
       <div className="mt-12 space-y-6">
         <ApiLog />

@@ -1,6 +1,7 @@
 import { ArrowRight, FlaskConical } from 'lucide-react';
 import { useLang } from '../lib/i18n';
 import { href } from '../lib/router';
+import ChecksPanel from '../kyc/ChecksPanel';
 import { ApiLog, ConnectionPanel } from '../kyc/Connection';
 import { MODULES } from '../kyc/modules';
 
@@ -40,6 +41,7 @@ export default function KycLab() {
 
       <div className="relative mx-auto max-w-7xl space-y-10 px-4 pb-24 sm:px-6">
         <ConnectionPanel />
+        <ChecksPanel collapsible />
 
         <section>
           <h2 className="mb-5 text-2xl font-bold text-white">{t('Modules', 'ماژول‌ها')}</h2>

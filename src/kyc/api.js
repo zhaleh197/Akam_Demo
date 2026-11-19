@@ -49,8 +49,14 @@ const formOf = (entries) => {
   return fd;
 };
 
-export function createClient({ baseUrl = DEFAULT_BASE_URL, accessCode = '', onLog } = {}) {
+// `checkModes` ({group: "off" | "info" | "block"}) relaxes or tightens the
+// selfie checks of capture sessions and single-image checks. Test only: the
+// server honours it only with KYC_DEBUG=true and refuses it (403) otherwise,
+// so the provider sends it only when the server says it is adjustable.
+export function createClient({ baseUrl = DEFAULT_BASE_URL, accessCode = '', checkModes = {}, onLog } = {}) {
   let seq = 0;
+  const modes = Object.keys(checkModes).length ? checkModes : null;
+  const captureOptions = () => (modes ? { check_modes: modes } : {});
 
   async function request(method, path, { json, form, signal } = {}) {
     const headers = {};
@@ -80,6 +86,10 @@ export function createClient({ baseUrl = DEFAULT_BASE_URL, accessCode = '', onLo
       data = text;
     }
     onLog?.({ id, method, path, status: res.status, ms: performance.now() - t0 });
+    // The dev proxy (/kyc-api, vite.config.js) answers an empty 5xx when the
+    // KYC server is not running on its target port: that is "unreachable",
+    // not a server error.
+    if (res.status >= 500 && !text && baseUrl.startsWith('/')) throw new ApiError({ status: 0, body: null, method, path });
     if (!res.ok) throw new ApiError({ status: res.status, body: data, method, path });
     return data;
   }
@@ -101,8 +111,10 @@ export function createClient({ baseUrl = DEFAULT_BASE_URL, accessCode = '', onLo
       }),
 
     // 02 face quality / capture
-    faceQualityCheck: (file) => post('/v1/face-quality/check', { form: formOf({ file }) }),
-    captureStart: () => post('/v1/face-capture/sessions', { json: {} }),
+    faceQualityCheckModes: () => get('/v1/face-quality/check-modes'),
+    faceQualityCheck: (file) =>
+      post('/v1/face-quality/check', { form: formOf({ file, check_modes: modes && JSON.stringify(modes) }) }),
+    captureStart: () => post('/v1/face-capture/sessions', { json: captureOptions() }),
     captureFrame: (sid, blob) => post(`/v1/face-capture/sessions/${sid}/frames`, { form: formOf({ file: blob }) }),
     captureStill: (sid, blob) => post(`/v1/face-capture/sessions/${sid}/still`, { form: formOf({ file: blob }) }),
     captureResult: (sid, includeSelfie = true) =>
@@ -129,7 +141,7 @@ export function createClient({ baseUrl = DEFAULT_BASE_URL, accessCode = '', onLo
     caseCreate: () => post('/v1/cases'),
     caseDocument: (caseId, file, profile) =>
       post(`/v1/cases/${caseId}/document`, { form: formOf({ file, profile }) }),
-    caseCapture: (caseId) => post(`/v1/cases/${caseId}/capture`, { json: {} }),
+    caseCapture: (caseId) => post(`/v1/cases/${caseId}/capture`, { json: captureOptions() }),
     caseLiveness: (caseId) => post(`/v1/cases/${caseId}/liveness`),
     caseFaceMatch: (caseId) => post(`/v1/cases/${caseId}/face-match`),
     caseFinalize: (caseId) => post(`/v1/cases/${caseId}/finalize`),
@@ -154,6 +166,10 @@ export const ERROR_TEXT = {
   case_incomplete: ['Some steps of this case are not done yet.', 'برخی مراحل این پرونده هنوز انجام نشده است.'],
   payload_too_large: ['The file is too large.', 'حجم فایل بیش از حد مجاز است.'],
   profile_not_found: ['Unknown document type.', 'نوع مدرک ناشناخته است.'],
+  checks_locked: [
+    'The server does not allow changing the selfie checks. Start it with KYC_DEBUG=true to test with checks off.',
+    'سرور اجازهٔ تغییر بررسی‌های سلفی را نمی‌دهد. برای تست با بررسی‌های خاموش، سرور را با KYC_DEBUG=true اجرا کنید.',
+  ],
 };
 
 export const b64ToDataUrl = (b64, mime = 'image/jpeg') => (b64 ? `data:${mime};base64,${b64}` : null);
