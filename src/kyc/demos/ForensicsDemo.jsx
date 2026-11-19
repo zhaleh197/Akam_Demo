@@ -69,7 +69,19 @@ export default function ForensicsDemo() {
       </div>
 
       <div className="space-y-6">
-        {error && <ErrorBox error={error} onRetry={run} />}
+        {error?.code === 'model_not_available' && error.path?.startsWith('/v1/forensics') ? (
+          <Notice tone="warn">
+            <div className="font-medium">{t('Forensics is not calibrated yet, so it cannot judge a card.', 'جرم‌شناسی هنوز کالیبره نشده و نمی‌تواند دربارهٔ کارت نظر بدهد.')}</div>
+            <div className="mt-1">
+              {t(
+                'Its limits are learned from genuine card photos taken with phones (specs/06-ai-forensics.md). Until models/forensics_calibration.json exists the server refuses the check instead of answering "pass".',
+                'حدهای آن از عکس‌های کارت اصل که با گوشی گرفته شده‌اند یاد گرفته می‌شود (specs/06-ai-forensics.md). تا وقتی فایل models/forensics_calibration.json ساخته نشده، سرور به‌جای «قبول»، بررسی را انجام نمی‌دهد.',
+              )}
+            </div>
+          </Notice>
+        ) : (
+          error && <ErrorBox error={error} onRetry={run} />
+        )}
         {busy && <Spinner>{t('Reading the card, then analysing its pixels…', 'خواندن کارت و سپس تحلیل پیکسل‌ها…')}</Spinner>}
         {!busy && !result && !error && (
           <Panel>
