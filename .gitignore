@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local env (secrets); .env.example is committed
+# Local env (secrets); .env.example and .env.production (public settings of
+# the deployed site, no secrets) are committed
 .env
 .env.*
 !.env.example
+!.env.production
