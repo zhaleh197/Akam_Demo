@@ -61,6 +61,10 @@ export function createClient({ baseUrl = DEFAULT_BASE_URL, accessCode = '', chec
   async function request(method, path, { json, form, signal } = {}) {
     const headers = {};
     if (accessCode) headers['X-Access-Code'] = accessCode;
+    // A KYC server behind ngrok's free plan (scripts/public_demo.py in the
+    // kyc project) answers a browser's first request with an HTML warning
+    // page instead of the API; this header skips it.
+    if (/\.ngrok(-free)?\.(app|dev)(\/|$)/.test(baseUrl)) headers['ngrok-skip-browser-warning'] = '1';
     let body;
     if (json !== undefined) {
       headers['Content-Type'] = 'application/json';
