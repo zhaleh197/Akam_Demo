@@ -150,7 +150,9 @@ export default function OcrDemo() {
                           <div dir="ltr" className="font-mono text-[10px] text-slate-600 ltr:text-left rtl:text-right">{f.backend}</div>
                         </td>
                         <td className="px-3 py-3 font-semibold text-white">
-                          {f.value || <span className="font-normal text-rose-300">{t('not read', 'خوانده نشد')}</span>}
+                          {f.value
+                            ? (f.kind === 'text' ? f.value : <bdi dir="ltr">{f.value}</bdi>)
+                            : <span className="font-normal text-rose-300">{t('not read', 'خوانده نشد')}</span>}
                         </td>
                         <td className="px-3 py-3 font-mono text-xs text-slate-500">{f.raw || '—'}</td>
                         <td className="px-5 py-3">
