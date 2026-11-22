@@ -33,7 +33,14 @@ export default function OcrDemo() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    client.ocrProfiles().then(setProfiles).catch(() => setProfiles([]));
+    client
+      .ocrProfiles()
+      .then((list) => {
+        setProfiles(list);
+        // The first type is selected; with no list the server uses its default.
+        setProfile((current) => current || list[0]?.id || '');
+      })
+      .catch(() => setProfiles([]));
   }, [client]);
 
   async function run() {
@@ -72,7 +79,7 @@ export default function OcrDemo() {
                 onChange={(e) => setProfile(e.target.value)}
                 className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-cyan-500 focus:outline-none"
               >
-                <option value="">{t('Default (Iranian national card)', 'پیش‌فرض (کارت ملی ایران)')}</option>
+                {!profiles.length && <option value="">{t('Iranian national card', 'کارت ملی ایران')}</option>}
                 {profiles.map((p) => (
                   <option key={p.id} value={p.id}>
                     {pick(p, 'name')} · {p.id}
@@ -103,7 +110,7 @@ export default function OcrDemo() {
 
       <div className="space-y-6">
         {error && <ErrorBox error={error} onRetry={run} />}
-        {busy && <Spinner>{t('Detecting fields and reading text - easyocr on CPU takes a few seconds…', 'تشخیص فیلدها و خواندن متن - easyocr روی CPU چند ثانیه طول می‌کشد…')}</Spinner>}
+        {busy && <Spinner>{t('Detecting fields and reading text (PaddleOCR) - takes a few seconds on CPU…', 'تشخیص فیلدها و خواندن متن (PaddleOCR) - روی CPU چند ثانیه طول می‌کشد…')}</Spinner>}
         {!busy && !result && !error && (
           <Panel>
             <Empty icon={FileText}>{t('Upload a card photo and run the module to see the extracted fields, validation and portrait here.', 'عکس کارت را آپلود و ماژول را اجرا کنید تا فیلدهای استخراج‌شده، اعتبارسنجی و عکس کارت اینجا نمایش داده شود.')}</Empty>
