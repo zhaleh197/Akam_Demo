@@ -41,7 +41,7 @@ export default function FaceMatchDemo() {
 
   const d = result?.data;
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6">
         <Panel title={t('1. Reference: the card portrait', '۱. مرجع: عکس روی کارت')}>
           <div className="mb-4 inline-flex rounded-lg border border-slate-800 bg-slate-950 p-1 text-sm">

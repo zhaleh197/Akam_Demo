@@ -50,7 +50,7 @@ export default function ForensicsDemo() {
   const regionName = (n) => (REGION[n] ? t(...REGION[n]) : n);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6">
         <Panel title={t('Card photo, as captured', 'عکس کارت، همان‌طور که گرفته شده')} subtitle={t('Not a screenshot or a re-saved copy - re-saving erases the traces this module looks for.', 'نه اسکرین‌شات و نه نسخهٔ دوباره ذخیره‌شده؛ ذخیرهٔ دوباره ردهایی را که این ماژول دنبالش است پاک می‌کند.')}>
           <div className="space-y-4">

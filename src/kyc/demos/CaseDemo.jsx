@@ -126,7 +126,7 @@ export default function CaseDemo() {
 
       {step === 1 && (
         <Panel title={t('1. Photo of the ID card', '۱. عکس کارت ملی')}>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-4">
               <ImageDrop file={card} onFile={setCard} capture="environment" />
               <Button icon={Play} loading={busy} disabled={!card} onClick={readCard} className="w-full">
@@ -159,7 +159,7 @@ export default function CaseDemo() {
 
       {step === 2 && (
         <Panel title={t('2. Selfie', '۲. سلفی')} subtitle={t('Matched against the card portrait as soon as it is captured.', 'بلافاصله پس از گرفتن، با عکس کارت مقایسه می‌شود.')}>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <SelfieCapture compact startSession={async () => (await client.caseCapture(kase.case_id)).capture_session_id} onCaptured={onSelfie} />
             <div className="space-y-4">
               {busy && <Spinner>{t('Comparing with the card…', 'در حال مقایسه با کارت…')}</Spinner>}

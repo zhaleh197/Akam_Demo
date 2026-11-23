@@ -101,7 +101,7 @@ export default function ChecksPanel({ collapsible = false }) {
             </Notice>
           )}
 
-          <ul className="grid gap-x-6 gap-y-2 lg:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-x-6 gap-y-2 lg:grid-cols-2">
             {groups.map((g) => {
               const label = LABELS[g];
               const current = modeOf(g);

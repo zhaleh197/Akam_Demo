@@ -45,7 +45,7 @@ export default function KycLab() {
 
         <section>
           <h2 className="mb-5 text-2xl font-bold text-white">{t('Modules', 'ماژول‌ها')}</h2>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {modules.map((m) => (
               <a
                 key={m.id}
@@ -77,7 +77,7 @@ export default function KycLab() {
           href={href('/kyc/case')}
           className="group block overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 p-8 transition-colors hover:border-cyan-500/50 md:p-10"
         >
-          <div className="grid items-center gap-8 md:grid-cols-[1fr_auto]">
+          <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1fr_auto]">
             <div>
               <div className="mb-2 text-sm font-medium text-cyan-300">{t('End to end', 'سرتاسری')}</div>
               <h2 className="mb-3 text-3xl font-bold text-white">{tr(kase.title)}</h2>

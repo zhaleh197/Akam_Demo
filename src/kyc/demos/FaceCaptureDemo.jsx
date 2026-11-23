@@ -15,7 +15,7 @@ export default function FaceCaptureDemo() {
   const [result, setResult] = useState(null);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
       <div className="space-y-6">
         <Panel title={t('Live capture session', 'جلسهٔ زندهٔ گرفتن سلفی')} subtitle={t('Face in the oval, plain background, good light.', 'صورت داخل بیضی، پس‌زمینهٔ ساده و نور کافی.')}>
           <SelfieCapture
@@ -31,7 +31,7 @@ export default function FaceCaptureDemo() {
           <>
             <ResultSummary result={result} title={t('Selfie capture', 'گرفتن سلفی')} />
             {result.data?.selfie_base64 && (
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <Panel title={t('Captured selfie', 'سلفی گرفته‌شده')}>
                   <Annotated
                     src={b64ToDataUrl(result.data.selfie_base64)}

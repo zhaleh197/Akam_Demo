@@ -30,7 +30,7 @@ export default function FaceQualityDemo() {
 
   const d = result?.data;
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6">
         <Panel title={t('Face photo', 'عکس چهره')} subtitle={t('Any single photo of a face. This check never produces a capture_id.', 'هر عکس تکی از چهره. این بررسی هرگز capture_id تولید نمی‌کند.')}>
           <div className="space-y-4">
@@ -59,7 +59,7 @@ export default function FaceQualityDemo() {
         {result && (
           <>
             <ResultSummary result={result} title={t('Face quality', 'کیفیت چهره')} />
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <Panel title={t('Detection', 'تشخیص')}>
                 <Annotated
                   src={preview}

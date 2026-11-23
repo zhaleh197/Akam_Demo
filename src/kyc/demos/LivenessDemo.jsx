@@ -33,7 +33,7 @@ export default function LivenessDemo() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)]">
       <div className="space-y-6">
         <Panel title={t('1. Whose liveness', '۱. زنده بودن چه کسی')} subtitle={t('The session stays bound to this selfie: a different face mid-session fails it.', 'جلسه به این سلفی گره خورده است؛ اگر وسط جلسه چهرهٔ دیگری بیاید، رد می‌شود.')}>
           <CaptureSource />

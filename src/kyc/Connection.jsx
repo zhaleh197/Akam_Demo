@@ -60,7 +60,7 @@ export function ConnectionPanel() {
         </span>
       }
     >
-      <div className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
         <label className="block text-sm">
           <span className="mb-1.5 block text-slate-400">{t('API base URL', 'آدرس پایهٔ API')}</span>
           <input

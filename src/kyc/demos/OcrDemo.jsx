@@ -68,7 +68,7 @@ export default function OcrDemo() {
     }));
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6">
         <Panel title={t('1. Card photo', '۱. عکس کارت')} subtitle={t('Front of the national card, whole card in frame, no direct glare.', 'روی کارت ملی، کل کارت در کادر و بدون بازتاب مستقیم نور.')}>
           <div className="space-y-4">
@@ -138,8 +138,8 @@ export default function OcrDemo() {
                     <tr className="border-b border-slate-800">
                       <th className="px-5 py-3 text-start font-medium">{t('Field', 'فیلد')}</th>
                       <th className="px-3 py-3 text-start font-medium">{t('Value', 'مقدار')}</th>
-                      <th className="px-3 py-3 text-start font-medium">{t('Raw recognition', 'خروجی خام')}</th>
-                      <th className="w-32 px-5 py-3 text-start font-medium">{t('Confidence', 'اطمینان')}</th>
+                      <th className="hidden px-3 py-3 text-start font-medium sm:table-cell">{t('Raw recognition', 'خروجی خام')}</th>
+                      <th className="w-24 px-4 sm:w-32 sm:px-5 py-3 text-start font-medium">{t('Confidence', 'اطمینان')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/70">
@@ -154,7 +154,7 @@ export default function OcrDemo() {
                             ? (f.kind === 'text' ? f.value : <bdi dir="ltr">{f.value}</bdi>)
                             : <span className="font-normal text-rose-300">{t('not read', 'خوانده نشد')}</span>}
                         </td>
-                        <td className="px-3 py-3 font-mono text-xs text-slate-500">{f.raw || '—'}</td>
+                        <td className="hidden px-3 py-3 font-mono text-xs text-slate-500 sm:table-cell">{f.raw || '—'}</td>
                         <td className="px-5 py-3">
                           <ScoreBar value={f.confidence} label=" " />
                         </td>
@@ -166,7 +166,7 @@ export default function OcrDemo() {
             </Panel>
             )}
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {data.card_base64 && fields.length > 0 && (
                 <Panel title={t('Detected fields on the card', 'فیلدهای تشخیص‌داده‌شده روی کارت')} className="md:col-span-2">
                   <Annotated src={b64ToDataUrl(data.card_base64)} boxes={boxes} />
