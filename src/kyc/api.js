@@ -163,7 +163,8 @@ export const ERROR_TEXT = {
   ],
   model_not_available: ['A model file this module needs is missing on the server.', 'فایل مدل لازم برای این ماژول روی سرور نیست.'],
   backend_not_installed: ['A library this module needs is not installed on the server.', 'کتابخانهٔ لازم برای این ماژول روی سرور نصب نیست.'],
-  image_quality: ['The image is not usable - take a clearer photo.', 'تصویر قابل استفاده نیست؛ عکس واضح‌تری بگیرید.'],
+  // The server's message says why (too small, blurry, dark); this is the headline.
+  image_quality: ['The image is not usable.', 'تصویر قابل استفاده نیست.'],
   invalid_input: ['The request could not be read.', 'درخواست قابل خواندن نبود.'],
   access_denied: ['A valid access code is required (set it in the connection panel).', 'کد دسترسی معتبر لازم است (در پنل اتصال وارد کنید).'],
   capture_not_found: ['The selfie has expired - take a new one.', 'سلفی منقضی شده است؛ سلفی جدید بگیرید.'],
