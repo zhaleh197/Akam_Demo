@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
+  Camera,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -366,9 +367,24 @@ export function ErrorBox({ error, onRetry }) {
 
 // ------------------------------------------------------------------ images
 
+// `capture` ("environment" / "user") adds a camera button. It is a second
+// input: on a phone an input with `capture` opens only the camera, so the
+// plain one stays for picking a saved photo from the gallery or files.
 export function ImageDrop({ file, onFile, label, hint, capture, className }) {
   const { t } = useLang();
   const inputRef = useRef(null);
+  const cameraRef = useRef(null);
+  const take = (e) => {
+    const f = e.target.files?.[0];
+    e.target.value = '';
+    if (f) onFile(f);
+  };
+  const cameraButton = (extra) =>
+    capture && (
+      <Button variant="secondary" icon={Camera} className={extra} onClick={() => cameraRef.current.click()}>
+        {t('Take a photo', 'گرفتن عکس')}
+      </Button>
+    );
   const [drag, setDrag] = useState(false);
   const preview = useObjectUrl(file);
 
@@ -395,14 +411,10 @@ export function ImageDrop({ file, onFile, label, hint, capture, className }) {
         ref={inputRef}
         type="file"
         accept="image/*"
-        capture={capture}
         className="hidden"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          e.target.value = '';
-          if (f) onFile(f);
-        }}
+        onChange={take}
       />
+      {capture && <input ref={cameraRef} type="file" accept="image/*" capture={capture} className="hidden" onChange={take} />}
       {preview ? (
         <div className="relative">
           <img src={preview} alt="" className="max-h-80 w-full bg-slate-950 object-contain" />
@@ -410,16 +422,20 @@ export function ImageDrop({ file, onFile, label, hint, capture, className }) {
             <span dir="ltr" className="truncate text-xs text-slate-300">
               {file.name} · {(file.size / 1024).toFixed(0)} KB
             </span>
-            <Button variant="secondary" className="px-3 py-1.5 text-xs" onClick={() => inputRef.current.click()}>
-              {t('Replace', 'تعویض')}
-            </Button>
+            <div className="flex shrink-0 gap-2">
+              {cameraButton('px-3 py-1.5 text-xs')}
+              <Button variant="secondary" className="px-3 py-1.5 text-xs" onClick={() => inputRef.current.click()}>
+                {t('Replace', 'تعویض')}
+              </Button>
+            </div>
           </div>
         </div>
       ) : (
+        <div className="flex flex-col items-center">
         <button
           type="button"
           onClick={() => inputRef.current.click()}
-          className="flex w-full flex-col items-center gap-3 px-6 py-12 text-center"
+          className={cx('flex w-full flex-col items-center gap-3 px-6 text-center', capture ? 'pb-4 pt-12' : 'py-12')}
         >
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-800 text-cyan-400 transition-transform group-hover:scale-110">
             <ImagePlus className="h-7 w-7" />
@@ -429,6 +445,8 @@ export function ImageDrop({ file, onFile, label, hint, capture, className }) {
             {hint || t('Drag & drop, or click to browse · JPG / PNG, up to 12 MB', 'بکشید و رها کنید یا کلیک کنید · JPG / PNG تا ۱۲ مگابایت')}
           </div>
         </button>
+        {capture && <div className="pb-8">{cameraButton('px-4 py-2 text-sm')}</div>}
+        </div>
       )}
     </div>
   );
